@@ -1,32 +1,60 @@
 {
-  "users": [
+  "user": [
     {
       "id": 1,
-      "first_name": "John",
-      "last_name": "Doe",
+      "name": "John Doe",
       "email": "johndoe@abc.com",
-      "gender": "Male"
+      "password": "abc1234"
     },
     {
       "id": 2,
-      "first_name": "Jane",
-      "last_name": "Doe",
+      "name": "Jane Doe",
       "email": "janedoe@abc.com",
-      "gender": "Female"
+      "password": "abc1234"
     },
     {
       "id": 3,
-      "first_name": "Alice",
-      "last_name": "Doe",
+      "first_name": "Alice Doe",
       "email": "alicedoe@abc.com",
-      "gender": "Female"
+      "password": "abc1234"
     },
     {
       "id": 4,
-      "first_name": "Bob",
-      "last_name": "Doe",
+      "first_name": "Bob Doe",
       "email": "bobdoe@abc.com",
-      "gender": "Male"
+      "password": "abc1234"
+    },
+    {
+      "name": "test",
+      "email": "test@gmail.com",
+      "id": 5,
+      "password": "abc1234"
     }
-  ]
+  ],
+  "admin": [
+    {
+      "email": "admin@gmail.com",
+      "password": "asdsd",
+      "name": "admin",
+      "id": 1
+    }
+  ],
+  "adminLogin": {
+    "status": 200,
+    "message": "Login successfull",
+    "data": {
+      "name": "admin",
+      "token": "e212d4e4-dbb4-42bf-9fbd-9b1a2a03fe06",
+      "role": "admin"
+    }
+  },
+  "userLogin": {
+    "status": 200,
+    "message": "User login successfull",
+    "data": {
+      "name": "user",
+      "token": "e212d4e4-dbb4-42bf-9fbd-9b1a2a03fe06",
+      "role": "user"
+    }
+  }
 }
