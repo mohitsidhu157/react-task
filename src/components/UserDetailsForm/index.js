@@ -5,8 +5,6 @@ import { TEXTS } from "src/constants/texts";
 
 const SignupForm = ({
   handleSubmit = () => {},
-  startLoading,
-  stopLoading,
   title = "",
   btnTitle = "",
   renderFooter = () => {},

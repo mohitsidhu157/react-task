@@ -1,49 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Link as RouterLink } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Link,
-} from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-// import Alert from "src/components/Alert";
-// import { loginAdmin } from "src/api";
-// import { CONSTANTS } from "src/commons";
-import { TEXTS } from "../../constants/texts";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { TEXTS } from "src/constants/texts";
 
-const SignupForm = ({ addLoginDetails, user, startLoading, stopLoading }) => {
-  const [snackbarState, setSnackbarState] = useState({
-    open: false,
-    message: "",
-    severity: "",
-  });
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSnackbarState({
-      ...snackbarState,
-      open: false,
-    });
-  };
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (user?.access_token) {
-  //     navigate(CONSTANTS.ROUTES.PRIVATE_ROUTES.DASHBOARD, {
-  //       replace: true,
-  //     });
-  //   }
-  // }, [user]);
-
+const LoginForm = ({
+  handleSubmit = () => {},
+  title = "",
+  btnTitle = "",
+  renderFooter = () => {},
+  values = {
+    email: "",
+    password: "",
+  },
+}) => {
   return (
     <>
       <Box
@@ -57,10 +26,7 @@ const SignupForm = ({ addLoginDetails, user, startLoading, stopLoading }) => {
       >
         <Container maxWidth="sm">
           <Formik
-            initialValues={{
-              email: "",
-              password: "",
-            }}
+            initialValues={values}
             validationSchema={Yup.object().shape({
               email: Yup.string()
                 .email(TEXTS.INVALID_EMAIL)
@@ -68,28 +34,7 @@ const SignupForm = ({ addLoginDetails, user, startLoading, stopLoading }) => {
                 .required(TEXTS.EMAIL_REQUIRED),
               password: Yup.string().max(255).required(TEXTS.PASSWORD_REQUIRED),
             })}
-            onSubmit={async (values) => {
-              // try {
-              //   startLoading();
-              //   const res = await loginAdmin(values);
-              //   const isError = res.status !== 200;
-              //   stopLoading();
-              //   setSnackbarState({
-              //     open: true,
-              //     message: res.message,
-              //     severity: isError ? "error" : "success",
-              //   });
-              //   if (!isError) {
-              //     addLoginDetails(res.data);
-              //   }
-              // } catch (err) {
-              //   setSnackbarState({
-              //     open: true,
-              //     message: err.message,
-              //     severity: "error",
-              //   });
-              // }
-            }}
+            onSubmit={handleSubmit}
           >
             {({
               errors,
@@ -103,7 +48,7 @@ const SignupForm = ({ addLoginDetails, user, startLoading, stopLoading }) => {
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
                   <Typography color="textPrimary" variant="h2">
-                    Log In
+                    {title}
                   </Typography>
                 </Box>
                 <TextField
@@ -141,31 +86,17 @@ const SignupForm = ({ addLoginDetails, user, startLoading, stopLoading }) => {
                     type="submit"
                     variant="contained"
                   >
-                    Log In
+                    {btnTitle}
                   </Button>
                 </Box>
               </form>
             )}
           </Formik>
-          <Typography color="textSecondary" variant="body1">
-            Don't Have an account?{" "}
-            <Link component={RouterLink} to="/register" variant="h6">
-              Sign Up
-            </Link>
-          </Typography>
-          <Snackbar
-            open={snackbarState.open}
-            autoHideDuration={3000}
-            onClose={handleClose}
-          >
-            {/* <Alert onClose={handleClose} severity={snackbarState.severity}>
-              {snackbarState.message}
-            </Alert> */}
-          </Snackbar>
+          {renderFooter()}
         </Container>
       </Box>
     </>
   );
 };
 
-export default SignupForm;
+export default LoginForm;

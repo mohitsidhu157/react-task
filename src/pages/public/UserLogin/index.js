@@ -8,7 +8,7 @@ import { LoginForm } from "src/components";
 import { getRequest } from "src/helpers/api";
 import { routes } from "src/constants/routes";
 
-const AdminLogin = () => {
+const UserLogin = () => {
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
@@ -31,17 +31,17 @@ const AdminLogin = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const res = await getRequest("/adminLogin");
+      const res = await getRequest("/userLogin");
       const isError = res.status !== 200;
       setSnackbarState({
         open: true,
-        message: isError ? "Admin Login successfully" : "Something went wrong",
+        message: isError ? "User Login successfully" : "Something went wrong",
         severity: isError ? "error" : "success",
       });
       if (!isError) {
-        navigate(routes.ADMIN_DASHBOARD);
+        navigate(routes.USER_DASHBOARD);
         globalDispatch({
-          type: globalActions.SET_ADMIN,
+          type: globalActions.SET_USER,
           payload: res.data,
         });
       }
@@ -57,13 +57,13 @@ const AdminLogin = () => {
   return (
     <>
       <LoginForm
-        title="Admin Login"
+        title="User Login"
         btnTitle="Login"
         handleSubmit={handleSubmit}
         renderFooter={() => (
           <Typography color="textSecondary" variant="body1">
             Don't Have an account?{" "}
-            <Link component={RouterLink} to={routes.ADMIN_SIGNUP} variant="h6">
+            <Link component={RouterLink} to={routes.USER_SIGNUP} variant="h6">
               Sign Up
             </Link>
           </Typography>
@@ -84,4 +84,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default UserLogin;
