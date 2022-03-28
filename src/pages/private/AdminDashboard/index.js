@@ -1,6 +1,8 @@
 import { Alert, Button, Container, Snackbar } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserList, UserModal } from "src/components";
+import { routes } from "src/constants/routes";
 import { GlobalContext } from "src/context";
 import {
   deleteRequest,
@@ -27,7 +29,16 @@ export default function AdminDashboard() {
 
   const [action, setAction] = useState("");
 
+  const navigate = useNavigate();
   const { globalState } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (!globalState.isLoggedIn) {
+      navigate(routes.USER_LOGIN, {
+        replace: true,
+      });
+    }
+  }, [globalState.isLoggedIn]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -42,7 +53,9 @@ export default function AdminDashboard() {
 
   const getUsers = async () => {
     try {
-      const res = await getRequest("/user?q=" + search);
+      const res = await getRequest(
+        "/user?_page=0&_limit=15&_sort=name&_order=asc&q=" + search
+      );
       const isError = !res.length;
 
       setSnackbarState({

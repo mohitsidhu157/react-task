@@ -1,5 +1,5 @@
 import { Typography, Link, Snackbar, Alert } from "@mui/material";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { globalActions, GlobalContext } from "src/context";
@@ -15,7 +15,21 @@ const AdminSignup = () => {
     severity: "",
   });
 
-  const { globalDispatch } = useContext(GlobalContext);
+  const { globalDispatch, globalState } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (!!globalState.isLoggedIn) {
+      if (Object.keys(globalState.user).length) {
+        navigate(routes.USER_DASHBOARD, {
+          replace: true,
+        });
+      } else {
+        navigate(routes.ADMIN_DASHBOARD, {
+          replace: true,
+        });
+      }
+    }
+  }, [globalState.isLoggedIn]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {

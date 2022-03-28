@@ -10,6 +10,7 @@ const initialState = {
   loading: false,
   snackBar: { state: false, message: "", severity: "error" },
   user: {},
+  admin: {},
   isLoggedIn: false,
 };
 
