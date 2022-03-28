@@ -1,0 +1,219 @@
+import { Alert, Button, Container, Snackbar } from "@mui/material";
+import React, { useEffect, useState, useContext } from "react";
+import { UserList, UserModal } from "src/components";
+import { GlobalContext } from "src/context";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "src/helpers/api";
+
+export default function AdminDashboard() {
+  const [snackbarState, setSnackbarState] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
+  const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    name: "",
+    password: "",
+  });
+
+  const [action, setAction] = useState("");
+
+  const { globalState } = useContext(GlobalContext);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarState({
+      ...snackbarState,
+      open: false,
+    });
+  };
+
+  const getUsers = async () => {
+    try {
+      const res = await getRequest("/user");
+      const isError = !res.length;
+
+      setSnackbarState({
+        open: true,
+        message: !isError
+          ? "User fetched successfully"
+          : "Something went wrong",
+        severity: isError ? "error" : "success",
+      });
+      if (!isError) {
+        setUsers(res);
+      }
+    } catch (err) {
+      setSnackbarState({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await deleteRequest("/user/" + id);
+      const isError = !res;
+
+      setSnackbarState({
+        open: true,
+        message: !isError
+          ? "User Deleted successfully"
+          : "Something went wrong",
+        severity: isError ? "error" : "success",
+      });
+      if (!isError) {
+        const currentUsers = [...users];
+        const newUsers = currentUsers.filter((user) => user.id !== id);
+        setUsers(newUsers);
+      }
+    } catch (err) {
+      setSnackbarState({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
+
+  const handleUpdateUser = async (newDetails) => {
+    try {
+      const res = await putRequest(
+        "/user/" + newDetails.id,
+        newDetails,
+        globalState?.admin?.token
+      );
+      const isError = !res;
+
+      setSnackbarState({
+        open: true,
+        message: !isError
+          ? "User Updated successfully"
+          : "Something went wrong",
+        severity: isError ? "error" : "success",
+      });
+      if (!isError) {
+        setOpen(false);
+        setUserDetails({
+          email: "",
+          name: "",
+          password: "",
+        });
+        getUsers();
+      }
+    } catch (err) {
+      setSnackbarState({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
+
+  const handleAddUser = async (userDetails) => {
+    try {
+      const res = await postRequest(
+        "/user/",
+        userDetails,
+        globalState?.admin?.token
+      );
+      const isError = !res;
+
+      setSnackbarState({
+        open: true,
+        message: !isError ? "User Added successfully" : "Something went wrong",
+        severity: isError ? "error" : "success",
+      });
+      if (!isError) {
+        setOpen(false);
+        setUserDetails({
+          email: "",
+          name: "",
+          password: "",
+        });
+        getUsers();
+      }
+    } catch (err) {
+      setSnackbarState({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
+
+  const handleUpdateClick = (user) => {
+    setAction("update");
+    setUserDetails(user);
+    setOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setAction("");
+    setOpen(false);
+    setUserDetails({
+      email: "",
+      name: "",
+      password: "",
+    });
+  };
+
+  const handleAddClick = () => {
+    setAction("add");
+    setOpen(true);
+  };
+
+  return (
+    <>
+      <Container>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleAddClick}
+        >
+          Add User
+        </Button>
+        <UserList
+          users={users}
+          handleDelete={handleDelete}
+          handleUpdateClick={handleUpdateClick}
+        />
+      </Container>
+      <UserModal
+        open={open}
+        handleClose={handleModalClose}
+        user={userDetails}
+        handleSubmit={action === "add" ? handleAddUser : handleUpdateUser}
+        title={action === "add" ? "Add user" : "Update User"}
+        btnTitle={action === "add" ? "Add" : "Update"}
+      />
+      {snackbarState.open && (
+        <Snackbar
+          open={snackbarState.open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert onClose={handleClose} severity={snackbarState.severity}>
+            {snackbarState.message}
+          </Alert>
+        </Snackbar>
+      )}
+    </>
+  );
+}

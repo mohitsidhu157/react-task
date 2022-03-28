@@ -6,18 +6,23 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 
-const UserList = ({ users }) => {
+const UserList = ({
+  users,
+  handleUpdateClick = () => {},
+  handleDelete = () => {},
+}) => {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
-            <TableCell align="center">Name</TableCell>
-            <TableCell align="center">Email</TableCell>
-            <TableCell align="center">Gender</TableCell>
-            <TableCell align="center">Status</TableCell>
+            <TableCell align="right">Name</TableCell>
+            <TableCell align="right">Email</TableCell>
+            <TableCell align="right"></TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -31,8 +36,26 @@ const UserList = ({ users }) => {
               </TableCell>
               <TableCell align="right">{user.name}</TableCell>
               <TableCell align="right">{user.email}</TableCell>
-              <TableCell align="right">{user.gender}</TableCell>
-              <TableCell align="right">{user.status}</TableCell>
+              <TableCell align="right">
+                <Button
+                  color="secondary"
+                  type="submit"
+                  variant="contained"
+                  onClick={() => handleUpdateClick(user)}
+                >
+                  Update
+                </Button>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  color="error"
+                  type="submit"
+                  variant="contained"
+                  onClick={() => handleDelete(user.id)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

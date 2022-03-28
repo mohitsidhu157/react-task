@@ -59,9 +59,9 @@ export const putRequest = (apiRoute, body = {}, token = "") => {
         method: "PUT",
         headers: {
           ...defaultHeaders,
-          access_token: token,
-          body: JSON.stringify(body),
+          Authorization: token,
         },
+        body: JSON.stringify(body),
       })
         .then((res) => res.json())
         .then((response) => {
