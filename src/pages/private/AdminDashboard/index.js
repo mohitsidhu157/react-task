@@ -23,6 +23,8 @@ export default function AdminDashboard() {
     password: "",
   });
 
+  const [search, setSearch] = useState("");
+
   const [action, setAction] = useState("");
 
   const { globalState } = useContext(GlobalContext);
@@ -40,7 +42,7 @@ export default function AdminDashboard() {
 
   const getUsers = async () => {
     try {
-      const res = await getRequest("/user");
+      const res = await getRequest("/user?q=" + search);
       const isError = !res.length;
 
       setSnackbarState({
@@ -178,17 +180,41 @@ export default function AdminDashboard() {
     setOpen(true);
   };
 
+  const handleSearchChange = ({ target }) => {
+    setSearch(target.value);
+  };
+
   return (
     <>
       <Container>
-        <Button
-          color="primary"
-          size="small"
-          variant="contained"
-          onClick={handleAddClick}
-        >
-          Add User
-        </Button>
+        <div style={styles.div}>
+          <Button
+            color="primary"
+            size="small"
+            variant="contained"
+            onClick={handleAddClick}
+          >
+            Add User
+          </Button>
+          <div>
+            <input
+              placeholder="Search"
+              name="Search"
+              onChange={handleSearchChange}
+              type="text"
+              value={search}
+              style={styles.search}
+            />
+            <Button
+              color="primary"
+              size="small"
+              variant="contained"
+              onClick={() => getUsers()}
+            >
+              Search
+            </Button>
+          </div>
+        </div>
         <UserList
           users={users}
           handleDelete={handleDelete}
@@ -217,3 +243,14 @@ export default function AdminDashboard() {
     </>
   );
 }
+
+const styles = {
+  div: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  search: {
+    padding: 5,
+    marginRight: "1rem",
+  },
+};
